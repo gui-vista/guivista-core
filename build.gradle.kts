@@ -1,4 +1,4 @@
-group = "org.example"
+group = "org.guivista"
 version = "1.0-SNAPSHOT"
 
 plugins {
