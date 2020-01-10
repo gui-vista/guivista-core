@@ -1,5 +1,5 @@
 group = "org.guivista"
-version = "1.0-SNAPSHOT"
+version = "0.1-SNAPSHOT"
 
 plugins {
     kotlin("multiplatform") version "1.3.61"
