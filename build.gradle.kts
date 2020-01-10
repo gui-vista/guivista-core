@@ -6,6 +6,11 @@ plugins {
     `maven-publish`
 }
 
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
 kotlin {
     linuxX64("linuxX64") {
         compilations.getByName("main") {
