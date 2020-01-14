@@ -1,7 +1,7 @@
 package org.guiVista.core
 
 import glib2.*
-import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.*
 
 /** A system for reporting a error. */
 class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
@@ -22,6 +22,17 @@ class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
          */
         fun fromLiteral(domain: GQuark, code: Int, message: String): Error =
             Error(g_error_new_literal(domain = domain, code = code, message = message))
+
+        /**
+         * Alters the [error's][Error] literal. Use this function if [message] contains text you don't have control
+         * over. That could include `printf()` escape sequences.
+         * @param domain The error domain.
+         * @param code The error code.
+         * @param message The error message.
+         */
+        fun changeLiteral(error: Error, domain: GQuark, code: Int, message: String) {
+            g_set_error_literal(err = cValuesOf(error.gErrorPtr), domain = domain, code = code, message = message)
+        }
     }
 
     override fun close() {
