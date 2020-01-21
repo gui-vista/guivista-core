@@ -2,4 +2,4 @@ package = glib2
 headers = glib-object.h glib.h
 headerFilter = glib/* gobject/*
 compilerOpts.linux = -I/mnt/pi_image/usr/include/glib-2.0 -I/mnt/pi_image/usr/lib/arm-linux-gnueabihf/glib-2.0/include
-linkerOpts.linux = -L/mnt/pi_image/usr/lib/x86_64-linux-gnu -lglib-2.0
+linkerOpts.linux = -L/mnt/pi_image/usr/lib/arm-linux-gnueabihf -lglib-2.0
