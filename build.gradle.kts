@@ -12,13 +12,6 @@ repositories {
 }
 
 kotlin {
-    linuxX64("linux") {
-        compilations.getByName("main") {
-            cinterops.create("glib2") {
-                includeDirs("/usr/include/glib-2.0")
-            }
-        }
-    }
     linuxX64("linuxX64") {
         compilations.getByName("main") {
             cinterops.create("glib2_x64") {
@@ -35,15 +28,17 @@ kotlin {
     }
     sourceSets {
         val unsignedTypes = "kotlin.ExperimentalUnsignedTypes"
-        val linuxMain by getting {
+        @Suppress("UNUSED_VARIABLE") val commonMain by getting {
             languageSettings.useExperimentalAnnotation(unsignedTypes)
+            dependencies {
+                val kotlinVer = "1.3.61"
+                implementation(kotlin("stdlib-common", kotlinVer))
+            }
         }
         @Suppress("UNUSED_VARIABLE") val linuxX64Main by getting {
-            dependsOn(linuxMain)
             languageSettings.useExperimentalAnnotation(unsignedTypes)
         }
         @Suppress("UNUSED_VARIABLE") val linuxArm32Main by getting {
-            dependsOn(linuxMain)
             languageSettings.useExperimentalAnnotation(unsignedTypes)
         }
     }

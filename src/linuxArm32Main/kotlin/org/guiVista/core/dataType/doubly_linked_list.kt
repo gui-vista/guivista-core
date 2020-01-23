@@ -1,33 +1,41 @@
 package org.guiVista.core.dataType
 
 import glib2.*
-import kotlinx.cinterop.CPointed
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.reinterpret
+import org.guiVista.core.Closable
 
-/**
- * A singly linked list that can be iterated in one direction. Remember to call [close] when you are finished with a
- * SinglyLinkedList instance. Maps to [GSList](https://developer.gnome.org/glib/stable/glib-Singly-Linked-Lists.html)
- * GLib data type.
- */
-class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
-    private var _gSListPtr = listPtr ?: g_slist_alloc()
-    val gSListPtr: CPointer<GSList>?
-        get() = _gSListPtr
-    /** The number of elements in a list. */
-    val length: UInt
-        get() = g_slist_length(_gSListPtr)
+actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
+    private var _gListPtr = listPtr ?: g_list_alloc()
+    val gListPtr: CPointer<GList>?
+        get() = _gListPtr
+    actual val length: UInt
+        get() = g_list_length(_gListPtr)
     var data: CPointer<*>?
-        get() = _gSListPtr?.pointed?.data
+        get() = _gListPtr?.pointed?.data
         set(value) {
-            _gSListPtr?.pointed?.data = value
+            _gListPtr?.pointed?.data = value
         }
-    val next: SinglyLinkedList?
+    actual val next: DoublyLinkedList?
         get() {
-            val tmp = _gSListPtr?.pointed
-            return if (tmp != null) SinglyLinkedList(tmp.next?.reinterpret()) else null
+            val tmp = _gListPtr?.pointed
+            return if (tmp != null) DoublyLinkedList(tmp.next?.reinterpret()) else null
         }
+    actual val prev: DoublyLinkedList?
+        get() {
+            val tmp = _gListPtr?.pointed
+            return if (tmp != null) DoublyLinkedList(tmp.prev?.reinterpret()) else null
+        }
+
+    /**
+     * Frees up the [DoublyLinkedList] instance. Note that only the list is freed. This function **MUST** be called to
+     * prevent memory leaks when you are finished with the [DoublyLinkedList] instance.
+     */
+    override fun close() {
+        g_list_free(_gListPtr)
+        _gListPtr = null
+    }
 
     /**
      * Adds a new element on to the end of the list.
@@ -46,7 +54,7 @@ class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
      * @param data The data for the new element.
      * @return The new start of the list.
      */
-    fun append(data: CPointer<*>?): CPointer<GSList>? = g_slist_append(_gSListPtr, data)
+    fun append(data: CPointer<*>?): CPointer<GList>? = g_list_append(_gListPtr, data)
 
     /**
      * Removes an element from a list.
@@ -63,7 +71,7 @@ class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
      * @param data The data of the element to remove.
      * @return The new start of the list.
      */
-    fun remove(data: CPointer<*>?) = g_slist_remove(_gSListPtr, data)
+    fun remove(data: CPointer<*>?) = g_list_remove(_gListPtr, data)
 
     /**
      * Adds a new element on to the start of the list. The return value is the new start of the list, which may have
@@ -71,16 +79,7 @@ class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
      * @param data The data for the new element.
      * @return The data for the new element.
      */
-    fun prepend(data: CPointer<*>?): CPointer<GSList>? = g_slist_prepend(_gSListPtr, data)
-
-    /**
-     * Frees up the [SinglyLinkedList] instance. Note that only the list is freed. This function **MUST** be called to
-     * prevent memory leaks when you are finished with the [SinglyLinkedList] instance.
-     */
-    fun close() {
-        g_slist_free(_gSListPtr)
-        _gSListPtr = null
-    }
+    fun prepend(data: CPointer<*>?): CPointer<GList>? = g_list_prepend(_gListPtr, data)
 
     /**
      * Removes all list nodes with data equal to data. Returns the new head of the list. Contrast with [remove], which
@@ -88,7 +87,7 @@ class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
      * @param data The data to remove.
      * @return The new head of the list.
      */
-    fun removeAll(data: CPointer<*>?): CPointer<GSList>? = g_slist_remove_all(_gSListPtr, data)
+    fun removeAll(data: CPointer<*>?): CPointer<GList>? = g_list_remove_all(_gListPtr, data)
 
     /**
      * Inserts a new element into the list at the given position.
@@ -97,8 +96,8 @@ class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
      * elements in the list, then the new element is added on to the end of the list.
      * @return The new start of the list.
      */
-    fun insert(data: CPointer<*>?, position: Int): CPointer<GSList>? =
-        g_slist_insert(list = _gSListPtr, data = data, position = position)
+    fun insert(data: CPointer<*>?, position: Int): CPointer<GList>? =
+        g_list_insert(list = _gListPtr, data = data, position = position)
 
     /**
      * Inserts a node before sibling containing data .
@@ -106,14 +105,14 @@ class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
      * @param data The data to put in the newly inserted node.
      * @return The new head of the list.
      */
-    fun <E : CPointed> insertBefore(sibling: SinglyLinkedList, data: CPointer<E>?): CPointer<GSList>? =
-        g_slist_insert_before(slist = gSListPtr, sibling = sibling.gSListPtr, data = data)
+    fun insertBefore(sibling: DoublyLinkedList, data: CPointer<*>?): CPointer<GList>? =
+        g_list_insert_before(list = _gListPtr, sibling = sibling.gListPtr, data = data)
 
     /**
      * Reverses a list.
      * @return The start of the reversed list.
      */
-    fun reverse(): CPointer<GSList>? = g_slist_reverse(gSListPtr)
+    fun reverse(): CPointer<GList>? = g_list_reverse(_gListPtr)
 
     /**
      * Finds the element in a GSList which contains the given data.
@@ -127,25 +126,25 @@ class SinglyLinkedList(listPtr: CPointer<GSList>? = null) {
      * @param data The element data to find.
      * @return The found list element, or *null* if it isn't found.
      */
-    fun find(data: CPointer<*>?): CPointer<GSList>? = g_slist_find(_gSListPtr, data)
+    fun find(data: CPointer<*>?): CPointer<GList>? = g_list_find(_gListPtr, data)
 
     /**
      * Gets the position of the given element in the list (starting from 0).
      * @param listLink An element in the list.
      * @return The position of the element in the list, or *-1* if the element isn't found.
      */
-    fun position(listLink: CPointer<GSList>?): Int = g_slist_position(_gSListPtr, listLink)
+    fun position(listLink: CPointer<GList>?): Int = g_list_position(_gListPtr, listLink)
 
     /**
      * Gets the position of the element containing the given data (starting from 0).
      * @param data The data to find.
      * @return The index of the element containing the data, or *-1* if the data isn't found.
      */
-    fun index(data: CPointer<*>?): Int = g_slist_index(_gSListPtr, data)
+    fun index(data: CPointer<*>?): Int = g_list_index(_gListPtr, data)
 }
 
-fun singlyLinkedList(listPtr: CPointer<GSList>? = null, init: SinglyLinkedList.() -> Unit): SinglyLinkedList {
-    val list = SinglyLinkedList(listPtr)
+fun doublyLinkedList(listPtr: CPointer<GList>? = null, init: DoublyLinkedList.() -> Unit): DoublyLinkedList {
+    val list = DoublyLinkedList(listPtr)
     list.init()
     return list
 }

@@ -6,29 +6,23 @@ import kotlinx.cinterop.pointed
 import kotlinx.cinterop.reinterpret
 import org.guiVista.core.Closable
 
-/**
- * A linked list that can be iterated over in both directions. Remember to call [close] when you are finished with a
- * DoublyLinkedList instance. Maps to [GList](https://developer.gnome.org/glib/stable/glib-Doubly-Linked-Lists.html)
- * GLib data type.
- */
-class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
+actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
     private var _gListPtr = listPtr ?: g_list_alloc()
     val gListPtr: CPointer<GList>?
         get() = _gListPtr
-    /** The number of elements in a list. */
-    val length: UInt
+    actual val length: UInt
         get() = g_list_length(_gListPtr)
     var data: CPointer<*>?
         get() = _gListPtr?.pointed?.data
         set(value) {
             _gListPtr?.pointed?.data = value
         }
-    val next: DoublyLinkedList?
+    actual val next: DoublyLinkedList?
         get() {
             val tmp = _gListPtr?.pointed
             return if (tmp != null) DoublyLinkedList(tmp.next?.reinterpret()) else null
         }
-    val prev: DoublyLinkedList?
+    actual val prev: DoublyLinkedList?
         get() {
             val tmp = _gListPtr?.pointed
             return if (tmp != null) DoublyLinkedList(tmp.prev?.reinterpret()) else null

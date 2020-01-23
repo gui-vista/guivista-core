@@ -3,8 +3,7 @@ package org.guiVista.core
 import glib2.*
 import kotlinx.cinterop.*
 
-/** A system for reporting a error. */
-class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
+actual class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
     val gErrorPtr: CPointer<GError>? = errorPtr
 
     companion object {

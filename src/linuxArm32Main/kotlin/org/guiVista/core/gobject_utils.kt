@@ -6,6 +6,20 @@ import glib2.g_signal_handler_disconnect
 import glib2.gpointer
 import kotlinx.cinterop.*
 
+private val emptyData by lazy { EmptyData() }
+private val emptyDataRef = StableRef.create(emptyData)
+
+/** Gets the C Pointer for EmptyData, which is used for supplying "empty" data when connecting a signal to a slot. **/
+@Suppress("unused")
+fun fetchEmptyDataPointer(): COpaquePointer = emptyDataRef.asCPointer()
+
+@Suppress("unused")
+actual fun disposeEmptyDataRef() {
+    emptyDataRef.dispose()
+}
+
+private class EmptyData
+
 /**
  * Connects a signal (event) to a slot (event handler). Note that all callback parameters must be primitive types or
  * nullable C pointers.
@@ -16,6 +30,7 @@ import kotlinx.cinterop.*
  * @param connectFlags The flags to use.
  * @return A handler ID > 0 for the [slot] **if** the connection is successful.
  */
+@Suppress("unused")
 fun <F : CFunction<*>> connectGSignal(
     obj: CPointer<*>?,
     signal: String,
@@ -36,6 +51,7 @@ fun <F : CFunction<*>> connectGSignal(
  * @param obj The GObject to use.
  * @param handlerId The handler ID to use.
  */
+@Suppress("unused")
 fun disconnectGSignal(obj: CPointer<*>?, handlerId: UInt) {
     g_signal_handler_disconnect(obj, handlerId)
 }
