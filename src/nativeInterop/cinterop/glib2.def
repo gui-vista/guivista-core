@@ -1,0 +1,5 @@
+package = glib2
+headers = glib-object.h glib.h
+headerFilter = glib/* gobject/*
+compilerOpts.linux = -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include
+linkerOpts.linux = -L/usr/lib/x86_64-linux-gnu -lglib-2.0

@@ -22,7 +22,7 @@ fun <F : CFunction<*>> connectGSignal(
     slot: CPointer<F>,
     data: gpointer? = null,
     connectFlags: GConnectFlags = 0u
-): ULong = g_signal_connect_data(
+): UInt = g_signal_connect_data(
     instance = obj,
     detailed_signal = signal,
     c_handler = slot.reinterpret(),
@@ -36,6 +36,6 @@ fun <F : CFunction<*>> connectGSignal(
  * @param obj The GObject to use.
  * @param handlerId The handler ID to use.
  */
-fun disconnectGSignal(obj: CPointer<*>?, handlerId: ULong) {
+fun disconnectGSignal(obj: CPointer<*>?, handlerId: UInt) {
     g_signal_handler_disconnect(obj, handlerId)
 }
