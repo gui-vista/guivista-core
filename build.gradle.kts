@@ -2,7 +2,7 @@ group = "org.guivista"
 version = "0.1-SNAPSHOT"
 
 plugins {
-    kotlin("multiplatform") version "1.3.61"
+    kotlin("multiplatform") version "1.3.72"
     `maven-publish`
 }
 
@@ -31,7 +31,7 @@ kotlin {
         @Suppress("UNUSED_VARIABLE") val commonMain by getting {
             languageSettings.useExperimentalAnnotation(unsignedTypes)
             dependencies {
-                val kotlinVer = "1.3.61"
+                val kotlinVer = "1.3.72"
                 implementation(kotlin("stdlib-common", kotlinVer))
             }
         }
@@ -42,4 +42,8 @@ kotlin {
             languageSettings.useExperimentalAnnotation(unsignedTypes)
         }
     }
+}
+
+tasks.create("createLinuxLibraries") {
+    dependsOn("linuxX64MainKlibrary", "linuxArm32MainKlibrary")
 }
