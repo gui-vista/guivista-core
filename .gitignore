@@ -3,5 +3,7 @@ build/
 .gradle/
 .idea/
 gradlew.bat
+gitlab.properties
+project.properties
 
 # Additional files/dirs to unignore.
