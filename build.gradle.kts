@@ -19,14 +19,14 @@ repositories {
 kotlin {
     linuxX64("linuxX64") {
         compilations.getByName("main") {
-            cinterops.create("glib2_x64") {
+            cinterops.create("glib2") {
                 includeDirs("/usr/include/glib-2.0")
             }
         }
     }
     linuxArm32Hfp("linuxArm32") {
         compilations.getByName("main") {
-            cinterops.create("glib2_arm32") {
+            cinterops.create("glib2") {
                 includeDirs("/mnt/pi_image/usr/include/glib-2.0")
             }
         }
