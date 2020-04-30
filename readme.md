@@ -15,33 +15,38 @@ In order to use the library with Gradle (version 5.4 or higher) do the following
 3. Insert the following into the **repositories** block:
 ```kotlin
 maven {
-    val projectId = "16245519"
-    url = uri("https://gitlab.com/api/v4/projects/$projectId/packages/maven")
+    val guiVistaCore = "16245519"
+    url = uri("https://gitlab.com/api/v4/projects/$guiVistaCore/packages/maven")
 }
 ```
-4. Add the library dependency: `implementation("org.guivista:guivista-core-$target:$guiVistaVer")`
+4. Create a library definition file called **glib2.def** which contains the following:
+```
+linkerOpts = -lglib-2.0 -lgobject-2.0
+linkerOpts.linux_x64 = -L/usr/lib/x86_64-linux-gnu
+linkerOpts.linux_arm32_hfp = -L/mnt/pi_image/usr/lib/arm-linux-gnueabihf
+```
+5. Add the glib2 library dependency: `cinterops.create("glib2")`
+6. Add the GUI Vista Core library dependency: `implementation("org.guivista:guivista-core:$guiVistaVer")`
 
 The build file should look similar to the following:
 ```kotlin
 // ...
 repositories {
     maven {
-        val projectId = "16245519"
-        url = uri("https://gitlab.com/api/v4/projects/$projectId/packages/maven")
+        val guiVistaCore = "16245519"
+        url = uri("https://gitlab.com/api/v4/projects/$guiVistaCore/packages/maven")
     }
 }
 
 kotlin {
     // ...
-    // Replace with linuxArm32Hfp if that target is used in the project.
     linuxX64 {
         // ...
         compilations.getByName("main") {
             dependencies {
-                // For a ARM v7 based SBC use the linuxarm32 target.
-                val target = "linuxx64"
                 val guiVistaVer = "0.1"
-                implementation("org.guivista:guivista-core-$target:$guiVistaVer")
+                cinterops.create("glib2")
+                implementation("org.guivista:guivista-core:$guiVistaVer")
             }
         }
     }
