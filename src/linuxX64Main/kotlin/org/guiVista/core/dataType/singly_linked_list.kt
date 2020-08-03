@@ -105,8 +105,7 @@ actual class SinglyLinkedList(listPtr: CPointer<GSList>? = null) : Closable {
         g_slist_insert_before(slist = _gSListPtr, sibling = sibling._gSListPtr, data = data)
     }
 
-    /** Reverses a list. */
-    fun reverse() {
+    actual fun reverse() {
         g_slist_reverse(_gSListPtr)
     }
 
@@ -128,12 +127,7 @@ actual class SinglyLinkedList(listPtr: CPointer<GSList>? = null) : Closable {
         return if (tmp != null) SinglyLinkedList(tmp) else null
     }
 
-    /**
-     * Gets the position of the given element in the list (starting from 0).
-     * @param listLink An element in the list.
-     * @return The position of the element in the list, or *-1* if the element isn't found.
-     */
-    fun position(listLink: SinglyLinkedList): Int = g_slist_position(_gSListPtr, listLink._gSListPtr)
+    actual fun position(listLink: SinglyLinkedList): Int = g_slist_position(_gSListPtr, listLink._gSListPtr)
 
     /**
      * Gets the position of the element containing the given data (starting from 0).
@@ -181,7 +175,7 @@ actual class SinglyLinkedList(listPtr: CPointer<GSList>? = null) : Closable {
      * @return A shallow copy of the list.
      * @see copyDeep
      */
-    fun copy(): SinglyLinkedList = SinglyLinkedList(g_slist_copy(_gSListPtr))
+    actual fun copy(): SinglyLinkedList = SinglyLinkedList(g_slist_copy(_gSListPtr))
 
     /**
      * Makes a full (deep) copy of a GSList. In contrast with [copy], this function uses [func] to make a copy of each
@@ -235,30 +229,16 @@ actual class SinglyLinkedList(listPtr: CPointer<GSList>? = null) : Closable {
         g_slist_sort_with_data(list = _gSListPtr, compare_func = compareFunc, user_data = userData)
     }
 
-    /**
-     * Adds a singly linked list onto the end of this list. Note that the elements of the added list are not copied.
-     * They are used directly.
-     */
-    fun concat(list: SinglyLinkedList) {
+    actual fun concat(list: SinglyLinkedList) {
         g_slist_concat(_gSListPtr, list._gSListPtr)
     }
 
-    /**
-     * Gets the last element in this list. This function iterates over the whole list.
-     * @return The last element in this list, or *null* if the list has no elements.
-     */
-    fun last(): SinglyLinkedList? {
+    actual fun last(): SinglyLinkedList? {
         val tmp = g_slist_last(_gSListPtr)
         return if (tmp != null) SinglyLinkedList(tmp) else null
     }
 
-    /**
-     * Gets the element at the given [position][pos] in this list. This function is based on the
-     * [g_slist_nth](https://developer.gnome.org/glib/2.64/glib-Singly-Linked-Lists.html#g-slist-nth) function.
-     * @param pos The position of the element, counting from *0*.
-     * @return The element, or *null* if the position is off the end of this list.
-     */
-    fun elementAt(pos: UInt): SinglyLinkedList? {
+    actual fun elementAt(pos: UInt): SinglyLinkedList? {
         val tmp = g_slist_nth(_gSListPtr, pos)
         return if (tmp != null) SinglyLinkedList(tmp) else null
     }
