@@ -7,33 +7,33 @@ import kotlinx.cinterop.pointed
 import kotlinx.cinterop.reinterpret
 import org.guiVista.core.Closable
 
-actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
+public actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
     private var _gListPtr = listPtr ?: g_list_alloc()
-    val gListPtr: CPointer<GList>?
+    public val gListPtr: CPointer<GList>?
         get() = _gListPtr
-    actual val length: UInt
+    public actual val length: UInt
         get() = g_list_length(_gListPtr)
-    var data: CPointer<*>?
+    public var data: CPointer<*>?
         get() = _gListPtr?.pointed?.data
         set(value) {
             _gListPtr?.pointed?.data = value
         }
-    actual val next: DoublyLinkedList?
+    public actual val next: DoublyLinkedList?
         get() {
             val tmp = _gListPtr?.pointed
             return if (tmp != null) DoublyLinkedList(tmp.next?.reinterpret()) else null
         }
-    actual val prev: DoublyLinkedList?
+    public actual val prev: DoublyLinkedList?
         get() {
             val tmp = _gListPtr?.pointed
             return if (tmp != null) DoublyLinkedList(tmp.prev?.reinterpret()) else null
         }
-    actual val first: DoublyLinkedList?
+    public actual val first: DoublyLinkedList?
         get() {
             val tmp = g_list_first(_gListPtr)
             return if (tmp != null) DoublyLinkedList(tmp) else null
         }
-    actual val last: DoublyLinkedList?
+    public actual val last: DoublyLinkedList?
         get() {
             val tmp = g_list_last(_gListPtr)
             return if (tmp != null) DoublyLinkedList(tmp) else null
@@ -53,7 +53,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param data The data for the new element.
      * @see append
      */
-    operator fun plusAssign(data: CPointer<*>?) {
+    public operator fun plusAssign(data: CPointer<*>?) {
         append(data)
     }
 
@@ -64,7 +64,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * elements, and reverse the list when all elements have been added.
      * @param data The data for the new element.
      */
-    fun append(data: CPointer<*>?) {
+    public fun append(data: CPointer<*>?) {
         g_list_append(_gListPtr, data)
     }
 
@@ -73,7 +73,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param data The data of the element to remove.
      * @see remove
      */
-    operator fun minusAssign(data: CPointer<*>?) {
+    public operator fun minusAssign(data: CPointer<*>?) {
         remove(data)
     }
 
@@ -82,7 +82,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * elements contain the data the list is unchanged.
      * @param data The data of the element to remove.
      */
-    fun remove(data: CPointer<*>?) {
+    public fun remove(data: CPointer<*>?) {
         g_list_remove(_gListPtr, data)
     }
 
@@ -91,7 +91,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * changed so make sure you store the new value.
      * @param data The data for the new element.
      */
-    fun prepend(data: CPointer<*>?) {
+    public fun prepend(data: CPointer<*>?) {
         g_list_prepend(_gListPtr, data)
     }
 
@@ -100,7 +100,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * removes only the first node matching the given data.
      * @param data The data to remove.
      */
-    fun removeAll(data: CPointer<*>?) {
+    public fun removeAll(data: CPointer<*>?) {
         g_list_remove_all(_gListPtr, data)
     }
 
@@ -110,7 +110,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param position The position to insert the element. If this is negative, or is larger than the number of
      * elements in the list, then the new element is added on to the end of the list.
      */
-    fun insert(data: CPointer<*>?, position: Int) {
+    public fun insert(data: CPointer<*>?, position: Int) {
         g_list_insert(list = _gListPtr, data = data, position = position)
     }
 
@@ -119,11 +119,11 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param sibling A node to insert data before.
      * @param data The data to put in the newly inserted node.
      */
-    fun insertBefore(sibling: DoublyLinkedList, data: CPointer<*>?) {
+    public fun insertBefore(sibling: DoublyLinkedList, data: CPointer<*>?) {
         g_list_insert_before(list = _gListPtr, sibling = sibling._gListPtr, data = data)
     }
 
-    actual fun reverse() {
+    public actual fun reverse() {
         g_list_reverse(_gListPtr)
     }
 
@@ -132,26 +132,26 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param data The element data to find.
      * @see find
      */
-    operator fun contains(data: CPointer<*>?): Boolean = find(data) != null
+    public operator fun contains(data: CPointer<*>?): Boolean = find(data) != null
 
     /**
      * Finds the element in a GSList which contains the given data.
      * @param data The element data to find.
      * @return The found list element, or *null* if it isn't found.
      */
-    fun find(data: CPointer<*>?): DoublyLinkedList? {
+    public fun find(data: CPointer<*>?): DoublyLinkedList? {
         val tmp = g_list_find(_gListPtr, data)
         return if (tmp != null) DoublyLinkedList(tmp) else null
     }
 
-    actual fun position(listLink: DoublyLinkedList): Int = g_list_position(_gListPtr, listLink._gListPtr)
+    public actual fun position(listLink: DoublyLinkedList): Int = g_list_position(_gListPtr, listLink._gListPtr)
 
     /**
      * Gets the position of the element containing the given data (starting from 0).
      * @param data The data to find.
      * @return The index of the element containing the data, or *-1* if the data isn't found.
      */
-    fun index(data: CPointer<*>?): Int = g_list_index(_gListPtr, data)
+    public fun index(data: CPointer<*>?): Int = g_list_index(_gListPtr, data)
 
     /**
      * Inserts a new element into the list using the given comparison function to determine its position. If you are
@@ -161,15 +161,15 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param func The function to compare elements in the list. It should return a number > *0* if the first parameter
      * comes after the second parameter in the sort order.
      */
-    fun insertSorted(data: gpointer, func: GCompareFunc) {
+    public fun insertSorted(data: gpointer, func: GCompareFunc) {
         g_list_insert_sorted(list = _gListPtr, data = data, func = func)
     }
 
-    actual fun removeLink(link: DoublyLinkedList) {
+    public actual fun removeLink(link: DoublyLinkedList) {
         g_list_remove_link(_gListPtr, link._gListPtr)
     }
 
-    actual fun deleteLink(link: DoublyLinkedList) {
+    public actual fun deleteLink(link: DoublyLinkedList) {
         g_list_delete_link(_gListPtr, link._gListPtr)
     }
 
@@ -178,7 +178,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * removes only the first node matching the given data.
      * @param data Data to remove.
      */
-    fun removeAll(data: COpaquePointer) {
+    public fun removeAll(data: COpaquePointer) {
         g_list_remove_all(_gListPtr, data)
     }
 
@@ -187,11 +187,11 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * **Note:** *free_func* must **NOT** modify the list (eg, by removing the freed element from it).
      * @param freeFunc The function to be called to free each element's data.
      */
-    fun freeFull(freeFunc: GDestroyNotify) {
+    public fun freeFull(freeFunc: GDestroyNotify) {
         g_list_free_full(_gListPtr, freeFunc)
     }
 
-    actual fun copy(): DoublyLinkedList = DoublyLinkedList(g_list_copy(_gListPtr))
+    public actual fun copy(): DoublyLinkedList = DoublyLinkedList(g_list_copy(_gListPtr))
 
     /**
      * Makes a full (deep) copy of this list. In contrast with [copy], this function uses func to make a copy of each
@@ -202,7 +202,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param userData User data passed to the []copy function][func], or *null*.
      * @return The start of the new list that holds a full copy of this list. Use [freeFull] to free it.
      */
-    fun copyDeep(func: GCopyFunc, userData: gpointer): DoublyLinkedList =
+    public fun copyDeep(func: GCopyFunc, userData: gpointer): DoublyLinkedList =
         DoublyLinkedList(g_list_copy_deep(list = _gListPtr, func = func, user_data = userData))
 
     /**
@@ -211,7 +211,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * elements of this list, and should return *0* if they are equal, a negative value if the first element comes
      * before the second, or a positive value if the first element comes after the second.
      */
-    fun sort(compareFunc: GCompareFunc) {
+    public fun sort(compareFunc: GCompareFunc) {
         g_list_sort(_gListPtr, compareFunc)
     }
 
@@ -224,7 +224,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * parameter comes after the second parameter in the sort order.
      * @param userData User data to pass to comparison function.
      */
-    fun insertSortedWithData(data: gpointer, func: GCompareDataFunc, userData: gpointer) {
+    public fun insertSortedWithData(data: gpointer, func: GCompareDataFunc, userData: gpointer) {
         g_list_insert_sorted_with_data(list = _gListPtr, func = func, data = data, user_data = userData)
     }
 
@@ -233,15 +233,15 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param compareFunc Comparison function.
      * @param userData User data to pass to [comparison function][compareFunc].
      */
-    fun sortWithData(compareFunc: GCompareDataFunc, userData: gpointer) {
+    public fun sortWithData(compareFunc: GCompareDataFunc, userData: gpointer) {
         g_list_sort_with_data(list = _gListPtr, compare_func = compareFunc, user_data = userData)
     }
 
-    actual fun concat(list: DoublyLinkedList) {
+    public actual fun concat(list: DoublyLinkedList) {
         g_list_concat(_gListPtr, list._gListPtr)
     }
 
-    actual fun elementAt(pos: UInt): DoublyLinkedList? {
+    public actual fun elementAt(pos: UInt): DoublyLinkedList? {
         val tmp = g_list_nth(_gListPtr, pos)
         return if (tmp != null) DoublyLinkedList(tmp) else null
     }
@@ -254,7 +254,7 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * @param pos The position of the element.
      * @return The element's data, or *null* if the position is off the end of this list.
      */
-    fun dataAt(pos: UInt): gpointer? = g_list_nth_data(_gListPtr, pos)
+    public fun dataAt(pos: UInt): gpointer? = g_list_nth_data(_gListPtr, pos)
 
     /**
      * Finds an element in this list using a supplied function to find the desired element. It iterates over the list,
@@ -265,14 +265,14 @@ actual class DoublyLinkedList(listPtr: CPointer<GList>? = null) : Closable {
      * data.
      * @return The found doubly linked list element, or *null* if it isn't found.
      */
-    fun findCustom(data: COpaquePointer, func: GCompareFunc): DoublyLinkedList? {
+    public fun findCustom(data: COpaquePointer, func: GCompareFunc): DoublyLinkedList? {
         val tmp = g_list_find_custom(list = _gListPtr, data = data, func = func)
         return if (tmp != null) DoublyLinkedList(tmp) else null
     }
 
 }
 
-fun doublyLinkedList(listPtr: CPointer<GList>? = null, init: DoublyLinkedList.() -> Unit): DoublyLinkedList {
+public fun doublyLinkedList(listPtr: CPointer<GList>? = null, init: DoublyLinkedList.() -> Unit): DoublyLinkedList {
     val list = DoublyLinkedList(listPtr)
     list.init()
     return list

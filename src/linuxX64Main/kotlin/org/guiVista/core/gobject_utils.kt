@@ -11,10 +11,10 @@ private val emptyDataRef = StableRef.create(emptyData)
 
 /** Gets the C Pointer for EmptyData, which is used for supplying "empty" data when connecting a signal to a slot. **/
 @Suppress("unused")
-fun fetchEmptyDataPointer(): COpaquePointer = emptyDataRef.asCPointer()
+public fun fetchEmptyDataPointer(): COpaquePointer = emptyDataRef.asCPointer()
 
 @Suppress("unused")
-actual fun disposeEmptyDataRef() {
+public actual fun disposeEmptyDataRef() {
     emptyDataRef.dispose()
 }
 
@@ -31,7 +31,7 @@ private class EmptyData
  * @return A handler ID > 0 for the [slot] **if** the connection is successful.
  */
 @Suppress("unused")
-fun <F : CFunction<*>> connectGSignal(
+public fun <F : CFunction<*>> connectGSignal(
     obj: CPointer<*>?,
     signal: String,
     slot: CPointer<F>,
@@ -52,6 +52,6 @@ fun <F : CFunction<*>> connectGSignal(
  * @param handlerId The handler ID to use.
  */
 @Suppress("unused")
-fun disconnectGSignal(obj: CPointer<*>?, handlerId: ULong) {
+public fun disconnectGSignal(obj: CPointer<*>?, handlerId: ULong) {
     g_signal_handler_disconnect(obj, handlerId)
 }

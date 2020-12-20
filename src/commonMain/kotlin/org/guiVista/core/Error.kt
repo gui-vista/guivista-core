@@ -1,4 +1,4 @@
 package org.guiVista.core
 
 /** A system for reporting a error. */
-expect class Error : Closable
+public expect class Error : Closable

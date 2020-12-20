@@ -1,7 +1,7 @@
 # GUI Vista Core (guivista-core)
 
 A Kotlin Native library that provides core functionality, which is based on the 
-[GLib](https://developer.gnome.org/glib/) library. This library depends on Kotlin Native (requires Kotlin 1.4.0) which 
+[GLib](https://developer.gnome.org/glib/) library. This library depends on Kotlin Native (requires Kotlin 1.4.21) which 
 is currently in beta, and doesn't provide any backwards compatibility guarantees! Currently, GUI Vista Core isn't 
 available in Maven Central or JCenter, but is available in a remote Bintray Maven repository.
 
@@ -42,7 +42,7 @@ kotlin {
         // ...
         compilations.getByName("main") {
             dependencies {
-                val guiVistaVer = "0.2.0"
+                val guiVistaVer = "0.3.0"
                 cinterops.create("glib2")
                 implementation("org.guivista:guivista-core:$guiVistaVer")
             }

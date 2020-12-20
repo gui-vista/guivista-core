@@ -3,12 +3,12 @@ package org.guiVista.core
 import glib2.*
 import kotlinx.cinterop.*
 
-actual class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
-    val gErrorPtr: CPointer<GError>? = errorPtr
+public actual class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
+    public val gErrorPtr: CPointer<GError>? = errorPtr
 
-    companion object {
+    public companion object {
         /** Creates a new [Error] instance from a errorPtr. */
-        fun fromErrorPtr(errorPtr: CPointer<GError>): Error = Error(errorPtr)
+        public fun fromErrorPtr(errorPtr: CPointer<GError>): Error = Error(errorPtr)
 
         /**
          * Creates a new [Error] instance. Unlike `g_error_new()`, [message] isn't a `printf` style format string. Use
@@ -19,7 +19,7 @@ actual class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
          * @param message Error message.
          * @return A new [Error] instance.
          */
-        fun fromLiteral(domain: GQuark, code: Int, message: String): Error =
+        public fun fromLiteral(domain: GQuark, code: Int, message: String): Error =
             Error(g_error_new_literal(domain = domain, code = code, message = message))
 
         /**
@@ -29,7 +29,7 @@ actual class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
          * @param code The error code.
          * @param message The error message.
          */
-        fun changeLiteral(error: Error, domain: GQuark, code: Int, message: String) {
+        public fun changeLiteral(error: Error, domain: GQuark, code: Int, message: String) {
             g_set_error_literal(err = cValuesOf(error.gErrorPtr), domain = domain, code = code, message = message)
         }
     }
@@ -48,6 +48,6 @@ actual class Error private constructor(errorPtr: CPointer<GError>?) : Closable {
      * @param code An error code.
      * @return If error matches [domain], and [code] then *true*, otherwise *false*.
      */
-    fun matches(domain: GQuark, code: Int): Boolean =
+    public fun matches(domain: GQuark, code: Int): Boolean =
         g_error_matches(error = gErrorPtr, domain = domain, code = code) == TRUE
 }
