@@ -107,6 +107,8 @@ public actual class DateTime private constructor(ptr: CPointer<GDateTime>?) : Cl
             val ptr = g_date_time_new_from_unix_local(unixTime)
             return if (ptr != null) DateTime(ptr) else null
         }
+
+        public fun fromPointer(ptr: CPointer<GDateTime>?): DateTime = DateTime(ptr)
     }
 
     public actual fun addDateAndTime(
