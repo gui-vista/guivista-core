@@ -1,7 +1,9 @@
 package org.guiVista.core.dataType
 
+import org.guiVista.core.Closable
+
 /** Strongly typed value data type. */
-public expect class Variant {
+public expect class Variant : Closable {
     /**
      * Determines the number of children in a container [Variant] instance. This includes variants, maybes, arrays,
      * tuples, and dictionary entries. It is an error to call this function on any other type of [Variant]. For

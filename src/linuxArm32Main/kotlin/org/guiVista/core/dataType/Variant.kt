@@ -3,9 +3,10 @@ package org.guiVista.core.dataType
 import glib2.*
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.toKString
+import org.guiVista.core.Closable
 
 /** Strongly typed value data type. */
-public actual class Variant private constructor(ptr: CPointer<GVariant>?) {
+public actual class Variant private constructor(ptr: CPointer<GVariant>?) : Closable {
     public val gVariantPtr: CPointer<GVariant>? = ptr
 
     public actual val totalChildren: ULong
@@ -58,5 +59,9 @@ public actual class Variant private constructor(ptr: CPointer<GVariant>?) {
         val ptr = g_variant_lookup_value(dictionary = dictionary.gVariantPtr, key = key,
             expected_type = expectedType.gVariantTypePtr)
         return if (ptr != null) Variant(ptr) else null
+    }
+
+    override fun close() {
+        g_variant_unref(gVariantPtr)
     }
 }
